@@ -30,5 +30,12 @@ namespace TCC_KM
             bancoDados.ProcessaLeitura(char.Parse(txtDelimitador.Text), chbRegistro.IsChecked.Value, chbTitulo.IsChecked.Value);
             dgBanco.ItemsSource = bancoDados._Banco.DefaultView;
         }
+
+        private void btnHopkins_Click(object sender, RoutedEventArgs e)
+        {
+            var hopkins = new Hopkins(bancoDados._Banco);
+            dgBanco1.ItemsSource = hopkins.AReg.DefaultView;
+            dgBanco2.ItemsSource = hopkins.GReg.DefaultView;
+        }
     }
 }

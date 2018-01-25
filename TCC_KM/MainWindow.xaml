@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TCC_KM"
         mc:Ignorable="d"
-        Title="TCC" Height="350" Width="525" WindowStartupLocation="CenterScreen">
+        Title="TCC" Height="468" Width="596" WindowStartupLocation="CenterScreen">
     <Grid>
         <Button x:Name="btnCaminho" Content="Abrir" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnCaminho_Click"/>
         <TextBox x:Name="txtCaminho" Height="20" Margin="10,10,95,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" IsEnabled="False">
@@ -22,7 +22,10 @@
         <CheckBox x:Name="chbRegistro" Content="Primeira coluna identifica o registro?" HorizontalAlignment="Left" Height="14" Margin="208,35,0,0" VerticalAlignment="Top" Width="214"/>
         <Label Content="Delimitador de coluna :" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtDelimitador" HorizontalAlignment="Left" Height="23" Margin="148,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Text=";" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
-        <DataGrid x:Name="dgBanco" Margin="10,90,10,10" IsReadOnly="True"/>
+        <DataGrid x:Name="dgBanco" Margin="10,90,10,207" IsReadOnly="True" FlowDirection="RightToLeft" Grid.IsSharedSizeScope="True" MinHeight="140" MinWidth="566" UseLayoutRounding="True"/>
+        <DataGrid x:Name="dgBanco1" Margin="10,239,299,10" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True"/>
+        <DataGrid x:Name="dgBanco2" Margin="299,239,10,10" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True"/>
+        <Button x:Name="btnHopkins" Content="Hopkins" HorizontalAlignment="Right" Margin="0,39,10,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnHopkins_Click"/>
 
     </Grid>
 </Window>

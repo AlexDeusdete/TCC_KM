@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Win32;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace TCC_KM
 {
@@ -20,9 +8,27 @@ namespace TCC_KM
     /// </summary>
     public partial class MainWindow : Window
     {
+        private BancoDados bancoDados;
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void btnCaminho_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                txtCaminho.Text = openFileDialog.FileName;
+            }
+            Processamento();
+        }
+
+        private void Processamento()
+        {
+            bancoDados = new BancoDados(txtCaminho.Text);
+            bancoDados.ProcessaLeitura(char.Parse(txtDelimitador.Text), chbRegistro.IsChecked.Value, chbTitulo.IsChecked.Value);
+            dgBanco.ItemsSource = bancoDados._Banco.DefaultView;
         }
     }
 }

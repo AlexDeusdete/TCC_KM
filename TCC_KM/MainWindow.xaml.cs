@@ -20,22 +20,23 @@ namespace TCC_KM
             if (openFileDialog.ShowDialog() == true)
             {
                 txtCaminho.Text = openFileDialog.FileName;
+                Processamento();
             }
-            Processamento();
         }
 
         private void Processamento()
         {
-            bancoDados = new BancoDados(txtCaminho.Text);
+            bancoDados = new BancoDados(txtCaminho.Text, int.Parse(txtCasasDecimais.Text));
             bancoDados.ProcessaLeitura(char.Parse(txtDelimitador.Text), chbRegistro.IsChecked.Value, chbTitulo.IsChecked.Value);
             dgBanco.ItemsSource = bancoDados._Banco.DefaultView;
         }
 
         private void btnHopkins_Click(object sender, RoutedEventArgs e)
         {
-            var hopkins = new Hopkins(bancoDados._Banco);
+            var hopkins = new Hopkins(bancoDados);
             dgBanco1.ItemsSource = hopkins.AReg.DefaultView;
             dgBanco2.ItemsSource = hopkins.GReg.DefaultView;
+            btnHopkins.Content = hopkins.result;
         }
     }
 }

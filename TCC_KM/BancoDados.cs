@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Globalization;
 
 namespace TCC_KM
 {
@@ -15,10 +13,12 @@ namespace TCC_KM
         public bool IdentificadorRegistro { get; private set; }
         public bool Titulos { get; private set; }
         public DataTable _Banco { get; private set; }
+        public int casasDecimais;
 
-        public BancoDados(string Path)
+        public BancoDados(string Path, int casasDecimais)
         {
             this.Path = Path;
+            this.casasDecimais = casasDecimais;
             _Banco = new DataTable();
         }
 
@@ -42,7 +42,7 @@ namespace TCC_KM
                     string[] headers = sr.ReadLine().Split(DelimitadorCol);
                     foreach (string header in headers)
                     {
-                        _Banco.Columns.Add(header);
+                        _Banco.Columns.Add(header, typeof(Double));
                     }
                 }
                 while (!sr.EndOfStream)
@@ -51,16 +51,16 @@ namespace TCC_KM
 
                     if (!Titulos && _Banco.Columns.Count == 0)
                     {
-                        for (int i = 0; i < rows.Length; i++)
+                        for (int i = rows.Length - 1; i >= 0; i--)
                         {
-                            _Banco.Columns.Add(i.ToString());
+                            _Banco.Columns.Add(i.ToString(), typeof(Double));
                         }
                     }
 
                     DataRow dr = _Banco.NewRow();
                     for (int i = 0; i < rows.Length; i++)
                     {
-                        dr[i] = rows[i].Trim();
+                        dr[i] = Math.Round(double.Parse(rows[i].Trim(),CultureInfo.InvariantCulture),casasDecimais);
                     }
                     _Banco.Rows.Add(dr);
                 }

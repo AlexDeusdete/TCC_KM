@@ -96,8 +96,8 @@ namespace TCC_KM
                     List<double> listX = banco.Rows[i].ItemArray.OfType<double>().ToList();
                     distancia = Math.Round(Ponto.Distancia(listX, listY), casasDecimais);
 
-                    //i == 0 significa que estou na primeira execução e a distancia ainda está em branco
-                    //i == 1 e index original ==0 significa que estou na primeira execução pois se o index original == 0 ele pula a primeira execução
+                    //i == 0 significa que estou na primeira execução e a distancia ainda está em branco.
+                    //i == 1 e index original ==0 significa que estou na primeira execução pois se o index original. == 0 ele pula a primeira execução
                     if ( (i == 0 || (i==1 && indexOriginal == 0))
                          || Convert.ToDouble(dr["DistanciaMin"]) > distancia)
                     {

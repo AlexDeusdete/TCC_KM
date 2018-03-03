@@ -56,7 +56,7 @@ namespace TCC_KM
 
         private void PrencherDadosGReg()
         {
-            /*Preenche com informações aleatorias*/
+            /*Preenche com informações aleatorias 25% do banco*/
             var rdn = new Random();
             for (int j = 0; j < Convert.ToInt32(banco.Rows.Count / 4.0); j++)
             {
@@ -64,9 +64,18 @@ namespace TCC_KM
                 int max, min;
                 for (int i = 0; i < banco.Columns.Count; i++)
                 {
-                    min = Convert.ToInt32(Convert.ToDouble(banco.Compute("MIN([" + banco.Columns[i].ColumnName + "])", "")));
-                    max = Convert.ToInt32(Convert.ToDouble(banco.Compute("MAX([" + banco.Columns[i].ColumnName + "])", "")));
-                    dr[i] =  Math.Round(rdn.Next(min,max) + rdn.NextDouble(), casasDecimais);
+                    if (banco.Columns[i].DataType == typeof(long))
+                    {
+                        min = Convert.ToInt32(banco.Compute("MIN([" + banco.Columns[i].ColumnName + "])", ""));
+                        max = Convert.ToInt32(banco.Compute("MAX([" + banco.Columns[i].ColumnName + "])", ""));
+                        dr[i] = rdn.Next(min, max);
+                    }
+                    else
+                    {
+                        min = Convert.ToInt32(Convert.ToDouble(banco.Compute("MIN([" + banco.Columns[i].ColumnName + "])", "")));
+                        max = Convert.ToInt32(Convert.ToDouble(banco.Compute("MAX([" + banco.Columns[i].ColumnName + "])", "")));
+                        dr[i] = Math.Round(rdn.Next(min, max) + rdn.NextDouble(), casasDecimais);
+                    }
                 }
                 GReg.Rows.Add(dr);
             }
@@ -79,7 +88,7 @@ namespace TCC_KM
 
             foreach (DataRow dr in table.Rows)
             {
-                List<double> listY = dr.ItemArray.OfType<double>().Take(banco.Columns.Count).ToList();
+                List<double> listY = dr.ItemArray.Select(x => Convert.ToDouble(x)).Take(banco.Columns.Count).ToList();
                 if (dr.Table.Columns.Contains("indexOriginal"))
                 {
                     indexOriginal = Convert.ToInt32(dr["indexOriginal"]);
@@ -93,7 +102,7 @@ namespace TCC_KM
                             continue;
                     }
 
-                    List<double> listX = banco.Rows[i].ItemArray.OfType<double>().ToList();
+                    List<double> listX = banco.Rows[i].ItemArray.Select(x => Convert.ToDouble(x)).Take(banco.Columns.Count).ToList();
                     distancia = Math.Round(Ponto.Distancia(listX, listY), casasDecimais);
 
                     //i == 0 significa que estou na primeira execução e a distancia ainda está em branco.

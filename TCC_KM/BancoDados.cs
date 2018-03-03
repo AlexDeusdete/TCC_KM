@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Data.OleDb;
 using CsvHelper;
 using CsvHelper.Configuration;
+using System.Linq;
 
 namespace TCC_KM
 {
@@ -76,6 +77,21 @@ namespace TCC_KM
                 }
                 _Banco.Rows.Add(row);
             }
+
+            FormataDataTable();
+        }
+
+        private void FormataDataTable()
+        {
+            var temp = _Banco.Clone();
+            for(int i = 0; i <= _Banco.Columns.Count - 1; i++)
+            {
+                bool allints = _Banco.AsEnumerable().All(r => r.Field<Double>(i) == (long)r.Field<Double>(i));
+                if (allints)
+                    temp.Columns[i].DataType = typeof(long);
+            }
+            temp.Load(_Banco.CreateDataReader());
+            _Banco = temp;
         }
 
     }

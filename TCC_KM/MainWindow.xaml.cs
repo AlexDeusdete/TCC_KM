@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Data;
 using System.Windows;
 
 namespace TCC_KM
@@ -9,9 +10,13 @@ namespace TCC_KM
     public partial class MainWindow : Window
     {
         private BancoDados bancoDados;
+        private DataTable hopkinsDT;
         public MainWindow()
         {
             InitializeComponent();
+            hopkinsDT = new DataTable();
+            hopkinsDT.Columns.Add("Hopkins");
+            dgBanco1.ItemsSource = hopkinsDT.DefaultView;
         }
 
         private void btnCaminho_Click(object sender, RoutedEventArgs e)
@@ -34,9 +39,7 @@ namespace TCC_KM
         private void btnHopkins_Click(object sender, RoutedEventArgs e)
         {
             var hopkins = new Hopkins(bancoDados);
-            dgBanco1.ItemsSource = hopkins.AReg.DefaultView;
-            dgBanco2.ItemsSource = hopkins.GReg.DefaultView;
-            btnHopkins.Content = hopkins.result;
+            hopkinsDT.Rows.Add(hopkins.result);
         }
     }
 }

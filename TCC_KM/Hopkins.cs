@@ -42,7 +42,7 @@ namespace TCC_KM
             var aux = new List<int>();
             var i = 0;
 
-            for (int j = 0; j < Convert.ToInt32(banco.Rows.Count / 3.0); j++)
+            for (int j = 0; j < Convert.ToInt32(banco.Rows.Count / 4.0); j++)
             {
                 i = rdn.Next(banco.Rows.Count);
                 while (aux.IndexOf(i) >= 0)
@@ -58,14 +58,14 @@ namespace TCC_KM
         {
             /*Preenche com informações aleatorias*/
             var rdn = new Random();
-            for (int j = 0; j < Convert.ToInt32(banco.Rows.Count / 3.0); j++)
+            for (int j = 0; j < Convert.ToInt32(banco.Rows.Count / 4.0); j++)
             {
                 DataRow dr = GReg.NewRow();
                 int max, min;
                 for (int i = 0; i < banco.Columns.Count; i++)
                 {
-                    min = Convert.ToInt32(Convert.ToDouble(banco.Compute("MIN([" + banco.Columns[i].ColumnName + "])", "")) * 0.5);
-                    max = Convert.ToInt32(Convert.ToDouble(banco.Compute("MAX([" + banco.Columns[i].ColumnName + "])", "")) * 1.5);
+                    min = Convert.ToInt32(Convert.ToDouble(banco.Compute("MIN([" + banco.Columns[i].ColumnName + "])", "")));
+                    max = Convert.ToInt32(Convert.ToDouble(banco.Compute("MAX([" + banco.Columns[i].ColumnName + "])", "")));
                     dr[i] =  Math.Round(rdn.Next(min,max) + rdn.NextDouble(), casasDecimais);
                 }
                 GReg.Rows.Add(dr);

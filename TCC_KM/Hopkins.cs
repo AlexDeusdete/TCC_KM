@@ -9,8 +9,8 @@ namespace TCC_KM
     class Hopkins
     {
         private readonly DataTable banco;
-        public DataTable AReg { get; private set; }
-        public DataTable GReg{ get; private set; }
+        public DataTable RegAmostraBanco { get; private set; }
+        public DataTable RegAleatorio{ get; private set; }
         private int casasDecimais;
         public double result { get; private set; }
 
@@ -20,24 +20,24 @@ namespace TCC_KM
         {
             this.banco = banco.GetBancoCalculo();
             casasDecimais = banco.casasDecimais;
-            AReg = this.banco.Clone();
-            GReg = this.banco.Clone();
-            AReg.Columns.Add("indexOriginal", typeof(Double));
-            AReg.Columns.Add("DistanciaMin", typeof(Double));
-            GReg.Columns.Add("DistanciaMin", typeof(Double));
-            AReg.Columns["DistanciaMin"].DefaultValue = 0;
-            GReg.Columns["DistanciaMin"].DefaultValue = 0;
+            RegAmostraBanco = this.banco.Clone();
+            RegAleatorio = this.banco.Clone();
+            RegAmostraBanco.Columns.Add("indexOriginal", typeof(Double));
+            RegAmostraBanco.Columns.Add("DistanciaMin", typeof(Double));
+            RegAleatorio.Columns.Add("DistanciaMin", typeof(Double));
+            RegAmostraBanco.Columns["DistanciaMin"].DefaultValue = 0;
+            RegAleatorio.Columns["DistanciaMin"].DefaultValue = 0;
 
             PrencherDadosAReg();
             PrencherDadosGReg();
-            CalculoMin(AReg);
-            CalculoMin(GReg);
+            CalculoMin(RegAmostraBanco);
+            CalculoMin(RegAleatorio);
             result = CalculoFinal();
         }
 
         private void PrencherDadosAReg()
         {
-            /*Preenche com registro aleatorios do banco*/
+            /*Preenche com registro aleatorios do banco 25%*/
             var rdn = new Random();
             var aux = new List<int>();
             var i = 0;
@@ -49,8 +49,8 @@ namespace TCC_KM
                     i = rdn.Next(banco.Rows.Count);
                 aux.Add(i);
 
-                AReg.ImportRow(banco.Rows[i]);
-                AReg.Rows[AReg.Rows.Count - 1]["indexOriginal"] = i;
+                RegAmostraBanco.ImportRow(banco.Rows[i]);
+                RegAmostraBanco.Rows[RegAmostraBanco.Rows.Count - 1]["indexOriginal"] = i;
             }
         }
 
@@ -60,7 +60,7 @@ namespace TCC_KM
             var rdn = new Random();
             for (int j = 0; j < Convert.ToInt32(banco.Rows.Count / 4.0); j++)
             {
-                DataRow dr = GReg.NewRow();
+                DataRow dr = RegAleatorio.NewRow();
                 int max, min;
                 for (int i = 0; i < banco.Columns.Count; i++)
                 {
@@ -77,7 +77,7 @@ namespace TCC_KM
                         dr[i] = Math.Round(rdn.Next(min, max) + rdn.NextDouble(), casasDecimais);
                     }
                 }
-                GReg.Rows.Add(dr);
+                RegAleatorio.Rows.Add(dr);
             }
         }
 
@@ -118,8 +118,8 @@ namespace TCC_KM
 
         private double CalculoFinal()
         {
-            double u = Convert.ToDouble(GReg.Compute("SUM([DistanciaMin])", ""));
-            double w = Convert.ToDouble(AReg.Compute("SUM([DistanciaMin])", ""));
+            double u = Convert.ToDouble(RegAleatorio.Compute("SUM([DistanciaMin])", ""));
+            double w = Convert.ToDouble(RegAmostraBanco.Compute("SUM([DistanciaMin])", ""));
 
             return u / (u + w);
         }

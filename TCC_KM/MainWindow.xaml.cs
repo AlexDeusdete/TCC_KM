@@ -33,7 +33,7 @@ namespace TCC_KM
         {
             bancoDados = new BancoDados(txtCaminho.Text, int.Parse(txtCasasDecimais.Text));
             bancoDados.ProcessaLeitura(char.Parse(txtDelimitador.Text), chbRegistro.IsChecked.Value, chbTitulo.IsChecked.Value);
-            dgBanco.ItemsSource = bancoDados._Banco.DefaultView;
+            dgBanco.ItemsSource = bancoDados.GetBanco().DefaultView;
         }
 
         private void btnHopkins_Click(object sender, RoutedEventArgs e)

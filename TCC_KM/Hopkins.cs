@@ -18,7 +18,7 @@ namespace TCC_KM
     /*GReg São registro gerador Aleatoriamente*/
     public Hopkins(BancoDados banco)
         {
-            this.banco = banco._Banco;
+            this.banco = banco.GetBancoCalculo();
             casasDecimais = banco.casasDecimais;
             AReg = this.banco.Clone();
             GReg = this.banco.Clone();

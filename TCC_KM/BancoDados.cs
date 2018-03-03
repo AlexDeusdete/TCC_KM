@@ -3,68 +3,78 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Globalization;
+using System.Data.OleDb;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace TCC_KM
 {
     class BancoDados
     {
-        private string Path;
+        private string Caminho;
         public char DelimitadorCol { get; private set; }
         public bool IdentificadorRegistro { get; private set; }
-        public bool Titulos { get; private set; }
-        public DataTable _Banco { get; private set; }
+        public bool TemCabecalho{ get; private set; }
+        private DataTable _Banco;
         public int casasDecimais;
 
         public BancoDados(string Path, int casasDecimais)
         {
-            this.Path = Path;
+            this.Caminho = Path;
             this.casasDecimais = casasDecimais;
             _Banco = new DataTable();
         }
 
-        public void ProcessaLeitura(char DelimitadorCol, bool IdentificadorRegistro, bool Titulos)
+        public DataTable GetBancoCalculo()
+        {
+            if (IdentificadorRegistro)
+            {
+                var aux = _Banco.Copy();
+                aux.Columns.RemoveAt(0);
+                return aux;
+            }
+            return _Banco.Copy();
+        }
+
+        public DataTable GetBanco() => _Banco;
+
+        public void ProcessaLeitura(char DelimitadorCol, bool IdentificadorRegistro, bool TemCabecalho)
         {
             this.DelimitadorCol = DelimitadorCol;
             this.IdentificadorRegistro = IdentificadorRegistro;
-            this.Titulos = Titulos;
+            this.TemCabecalho = TemCabecalho;
 
             CsvToData();
         }
 
         private void CsvToData()
         {
-            using (StreamReader sr = new StreamReader(Path))
-            {
-                
-
-                if (Titulos)
+            var csv = new CsvReader(new StreamReader(Caminho));
+            csv.Configuration.Delimiter = DelimitadorCol.ToString(); 
+            while (csv.Read())
+            {      
+                var i = 0;
+                string Coluna = "";
+                if (_Banco.Columns.Count == 0)
                 {
-                    string[] headers = sr.ReadLine().Split(DelimitadorCol);
-                    foreach (string header in headers)
+                    while (csv.TryGetField<string>(i, out Coluna))
                     {
-                        _Banco.Columns.Add(header, typeof(Double));
+                        if (TemCabecalho)
+                            _Banco.Columns.Add(Coluna,typeof(double));
+                        else
+                            _Banco.Columns.Add(i.ToString(), typeof(double));
+                        i++;
                     }
-                }
-                while (!sr.EndOfStream)
-                {
-                    string[] rows = sr.ReadLine().Split(DelimitadorCol);
-
-                    if (!Titulos && _Banco.Columns.Count == 0)
-                    {
-                        for (int i = rows.Length - 1; i >= 0; i--)
-                        {
-                            _Banco.Columns.Add(i.ToString(), typeof(Double));
-                        }
-                    }
-
-                    DataRow dr = _Banco.NewRow();
-                    for (int i = 0; i < rows.Length; i++)
-                    {
-                        dr[i] = Math.Round(double.Parse(rows[i].Trim(),CultureInfo.InvariantCulture),casasDecimais);
-                    }
-                    _Banco.Rows.Add(dr);
+                    if (TemCabecalho)
+                        continue;
                 }
 
+                var row = _Banco.NewRow();
+                foreach (DataColumn column in _Banco.Columns)
+                {
+                    row[column.ColumnName] = Math.Round(double.Parse(csv.GetField(_Banco.Columns.IndexOf(column)), CultureInfo.InvariantCulture), casasDecimais);
+                }
+                _Banco.Rows.Add(row);
             }
         }
 

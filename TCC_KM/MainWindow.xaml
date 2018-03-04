@@ -24,9 +24,11 @@
         <TextBox x:Name="txtDelimitador" HorizontalAlignment="Left" Height="23" Margin="148,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Text=";" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
         <DataGrid x:Name="dgBanco" Margin="10,90,10,207" IsReadOnly="True" Grid.IsSharedSizeScope="True" MinHeight="140" MinWidth="566" UseLayoutRounding="True"/>
         <DataGrid x:Name="dgBanco1" Margin="10,0,0,10" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True" VerticalAlignment="Bottom" Height="192" HorizontalAlignment="Left" Width="235"/>
-        <Button x:Name="btnHopkins" Content="Hopkins" HorizontalAlignment="Right" Margin="0,39,10,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnHopkins_Click"/>
+        <Button x:Name="btnHopkins" Content="Hopkins" HorizontalAlignment="Right" Margin="0,34,9.6,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnHopkins_Click" Height="19"/>
         <Label Content="Quantidade de casas decimais :" HorizontalAlignment="Left" Margin="208,54,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtCasasDecimais" HorizontalAlignment="Left" Height="23" Margin="388,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Text="7" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+        <Button x:Name="btnKMedia" Content="K-media" HorizontalAlignment="Right" Margin="0,58,9.6,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnKMedia_Click"/>
+        <DataGrid x:Name="dgkmedia" Margin="0,0,9.6,10.4" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True" VerticalAlignment="Bottom" Height="192" HorizontalAlignment="Right" Width="330"/>
 
     </Grid>
 </Window>

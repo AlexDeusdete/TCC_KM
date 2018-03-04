@@ -41,5 +41,14 @@ namespace TCC_KM
             var hopkins = new Hopkins(bancoDados);
             hopkinsDT.Rows.Add(hopkins.result);
         }
+
+        private void btnKMedia_Click(object sender, RoutedEventArgs e)
+        {
+            var kmedias = new Kmedias(bancoDados);
+            kmedias.CentroidesIniciais();
+            kmedias.CalculaCentroideGeral();
+            dgkmedia.ItemsSource = kmedias._dados.DefaultView;
+            kmedias.Processamento();
+        }
     }
 }

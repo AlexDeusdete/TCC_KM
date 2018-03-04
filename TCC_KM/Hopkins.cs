@@ -40,11 +40,10 @@ namespace TCC_KM
             /*Preenche com registro aleatorios do banco 25%*/
             var rdn = new Random();
             var aux = new List<int>();
-            var i = 0;
 
             for (int j = 0; j < Convert.ToInt32(banco.Rows.Count / 4.0); j++)
             {
-                i = rdn.Next(banco.Rows.Count);
+                var i = rdn.Next(banco.Rows.Count);
                 while (aux.IndexOf(i) >= 0)
                     i = rdn.Next(banco.Rows.Count);
                 aux.Add(i);
@@ -66,14 +65,14 @@ namespace TCC_KM
                 {
                     if (banco.Columns[i].DataType == typeof(long))
                     {
-                        min = Convert.ToInt32(banco.Compute("MIN([" + banco.Columns[i].ColumnName + "])", ""));
-                        max = Convert.ToInt32(banco.Compute("MAX([" + banco.Columns[i].ColumnName + "])", ""));
+                        min = Convert.ToInt32(banco.AsEnumerable().Min(x => x.Field<long>(i)));
+                        max = Convert.ToInt32(banco.AsEnumerable().Max(x => x.Field<long>(i)));
                         dr[i] = rdn.Next(min, max);
                     }
                     else
                     {
-                        min = Convert.ToInt32(Convert.ToDouble(banco.Compute("MIN([" + banco.Columns[i].ColumnName + "])", "")));
-                        max = Convert.ToInt32(Convert.ToDouble(banco.Compute("MAX([" + banco.Columns[i].ColumnName + "])", "")));
+                        min = Convert.ToInt32(banco.AsEnumerable().Min(x => x.Field<double>(i)));
+                        max = Convert.ToInt32(banco.AsEnumerable().Max(x => x.Field<double>(i)));
                         dr[i] = Math.Round(rdn.Next(min, max) + rdn.NextDouble(), casasDecimais);
                     }
                 }
@@ -118,8 +117,9 @@ namespace TCC_KM
 
         private double CalculoFinal()
         {
-            double u = Convert.ToDouble(RegAleatorio.Compute("SUM([DistanciaMin])", ""));
-            double w = Convert.ToDouble(RegAmostraBanco.Compute("SUM([DistanciaMin])", ""));
+            
+            double u = Convert.ToDouble(RegAleatorio.AsEnumerable().Sum(x => x.Field<double>("DistanciaMin")));
+            double w = Convert.ToDouble(RegAmostraBanco.AsEnumerable().Sum(x => x.Field<double>("DistanciaMin")));
 
             return u / (u + w);
         }

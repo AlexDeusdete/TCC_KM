@@ -7,28 +7,46 @@
         mc:Ignorable="d"
         Title="TCC" Height="468" Width="596" WindowStartupLocation="CenterScreen">
     <Grid>
-        <Button x:Name="btnCaminho" Content="Abrir" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnCaminho_Click"/>
-        <TextBox x:Name="txtCaminho" Height="20" Margin="10,10,95,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" IsEnabled="False">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <CheckBox x:Name="chbTitulo" Content="Primeira linha são os títulos?" HorizontalAlignment="Left" Height="14" Margin="10,35,0,0" VerticalAlignment="Top" Width="174"/>
-        <CheckBox x:Name="chbRegistro" Content="Primeira coluna identifica o registro?" HorizontalAlignment="Left" Height="14" Margin="208,35,0,0" VerticalAlignment="Top" Width="214"/>
-        <Label Content="Delimitador de coluna :" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtDelimitador" HorizontalAlignment="Left" Height="23" Margin="148,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Text=";" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
-        <DataGrid x:Name="dgBanco" Margin="10,90,10,207" IsReadOnly="True" Grid.IsSharedSizeScope="True" MinHeight="140" MinWidth="566" UseLayoutRounding="True"/>
-        <DataGrid x:Name="dgBanco1" Margin="10,0,0,10" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True" VerticalAlignment="Bottom" Height="192" HorizontalAlignment="Left" Width="235"/>
-        <Button x:Name="btnHopkins" Content="Hopkins" HorizontalAlignment="Right" Margin="0,34,9.6,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnHopkins_Click" Height="19"/>
-        <Label Content="Quantidade de casas decimais :" HorizontalAlignment="Left" Margin="208,54,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtCasasDecimais" HorizontalAlignment="Left" Height="23" Margin="388,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Text="7" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
-        <Button x:Name="btnKMedia" Content="K-media" HorizontalAlignment="Right" Margin="0,58,9.6,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnKMedia_Click"/>
-        <DataGrid x:Name="dgkmedia" Margin="0,0,9.6,10.4" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True" VerticalAlignment="Bottom" Height="192" HorizontalAlignment="Right" Width="330"/>
+        <TabControl Margin="0,0,-0.4,0">
+            <TabItem x:Name="tabDados" Header="Dados">
+                <Grid Background="#FFE5E5E5">
+                    <Button x:Name="btnCaminho" Content="Abrir" HorizontalAlignment="Right" Margin="0,10,4.8,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnCaminho_Click"/>
+                    <TextBox x:Name="txtCaminho" Height="20" Margin="10,10,89.8,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" IsEnabled="False">
+                        <TextBox.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </TextBox.RenderTransform>
+                    </TextBox>
+                    <DataGrid x:Name="dgDados" Margin="10,90,9.8,10.4" IsReadOnly="True" Grid.IsSharedSizeScope="True" MinHeight="140" MinWidth="566" UseLayoutRounding="True"/>
+                    <CheckBox x:Name="chbTitulo" Content="Primeira linha são os títulos?" HorizontalAlignment="Left" Height="14" Margin="10,35,0,0" VerticalAlignment="Top" Width="174"/>
+                    <CheckBox x:Name="chbRegistro" Content="Primeira coluna identifica o registro?" HorizontalAlignment="Left" Height="14" Margin="208,35,0,0" VerticalAlignment="Top" Width="214"/>
+                    <Label Content="Delimitador de coluna :" HorizontalAlignment="Left" Margin="10,54,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="txtDelimitador" HorizontalAlignment="Left" Height="23" Margin="148,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Text=";" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                    <Label Content="Quantidade de casas decimais :" HorizontalAlignment="Left" Margin="208,54,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="txtCasasDecimais" HorizontalAlignment="Left" Height="23" Margin="388,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="26" Text="7" FontSize="16" FontWeight="Bold" TextAlignment="Center"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="tabHopkins" Header="Hopkins">
+                <Grid Background="#FFE5E5E5">
+                    <Button x:Name="btnHopkins" Content="Hopkins" HorizontalAlignment="Right" Margin="0,10,494.8,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnHopkins_Click" Height="19"/>
+                    <DataGrid x:Name="dgHopkins" Margin="10,34,0,10.4" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True" HorizontalAlignment="Left" Width="235"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="tabKmedias" Header="K-Medias">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="28*"/>
+                        <ColumnDefinition Width="89*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="btnKMedia" Content="K-media" HorizontalAlignment="Right" Margin="0,10,9.8,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnKMedia_Click" Grid.Column="1"/>
+                    <DataGrid x:Name="dgkmedia" Margin="10,34,9.8,10.4" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True" Grid.ColumnSpan="2"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </Window>

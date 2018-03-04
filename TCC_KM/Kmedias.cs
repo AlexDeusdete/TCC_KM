@@ -77,14 +77,14 @@ namespace TCC_KM
 
             for(int i = 0; i <= _numeroGrupos-1 ; i++)
             {
-                /*var reg = rdn.Next(_dados.Rows.Count);
+                var reg = rdn.Next(_dados.Rows.Count);
                 //operação para evitar dois centroides iguais
                 while (aux.IndexOf(reg) >= 0)
                     reg = rdn.Next(_dados.Rows.Count);
-                aux.Add(reg);*/
+                aux.Add(reg);
 
                 _centroides.Add(
-                    _dados.Rows[i].ItemArray.Select(x => Convert.ToDouble(x)).Take(numeroDeCampos).ToList()
+                    _dados.Rows[reg].ItemArray.Select(x => Convert.ToDouble(x)).Take(numeroDeCampos).ToList()
                     );
             }
         }

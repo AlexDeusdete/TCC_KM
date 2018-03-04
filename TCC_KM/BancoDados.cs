@@ -13,37 +13,37 @@ namespace TCC_KM
     class BancoDados
     {
         private string Caminho;
-        public char DelimitadorCol { get; private set; }
-        public bool IdentificadorRegistro { get; private set; }
-        public bool TemCabecalho{ get; private set; }
-        private DataTable _Banco;
-        public int casasDecimais;
+        public char _delimitadorColuna { get; private set; }
+        public bool _identificadorDoRegistro { get; private set; }
+        public bool _temCabecalho{ get; private set; }
+        private DataTable Banco;
+        public int _casasDecimais { get; private set; }
 
         public BancoDados(string Path, int casasDecimais)
         {
             this.Caminho = Path;
-            this.casasDecimais = casasDecimais;
-            _Banco = new DataTable();
+            this._casasDecimais = casasDecimais;
+            Banco = new DataTable();
         }
 
         public DataTable GetBancoCalculo()
         {
-            if (IdentificadorRegistro)
+            if (_identificadorDoRegistro)
             {
-                var aux = _Banco.Copy();
+                var aux = Banco.Copy();
                 aux.Columns.RemoveAt(0);
                 return aux;
             }
-            return _Banco.Copy();
+            return Banco.Copy();
         }
 
-        public DataTable GetBanco() => _Banco;
+        public DataTable GetBanco() => Banco;
 
         public void ProcessaLeitura(char DelimitadorCol, bool IdentificadorRegistro, bool TemCabecalho)
         {
-            this.DelimitadorCol = DelimitadorCol;
-            this.IdentificadorRegistro = IdentificadorRegistro;
-            this.TemCabecalho = TemCabecalho;
+            this._delimitadorColuna = DelimitadorCol;
+            this._identificadorDoRegistro = IdentificadorRegistro;
+            this._temCabecalho = TemCabecalho;
 
             CsvToData();
         }
@@ -51,31 +51,31 @@ namespace TCC_KM
         private void CsvToData()
         {
             var csv = new CsvReader(new StreamReader(Caminho));
-            csv.Configuration.Delimiter = DelimitadorCol.ToString(); 
+            csv.Configuration.Delimiter = _delimitadorColuna.ToString(); 
             while (csv.Read())
             {      
                 var i = 0;
                 string Coluna = "";
-                if (_Banco.Columns.Count == 0)
+                if (Banco.Columns.Count == 0)
                 {
                     while (csv.TryGetField<string>(i, out Coluna))
                     {
-                        if (TemCabecalho)
-                            _Banco.Columns.Add(Coluna,typeof(double));
+                        if (_temCabecalho)
+                            Banco.Columns.Add(Coluna,typeof(double));
                         else
-                            _Banco.Columns.Add(i.ToString(), typeof(double));
+                            Banco.Columns.Add(i.ToString(), typeof(double));
                         i++;
                     }
-                    if (TemCabecalho)
+                    if (_temCabecalho)
                         continue;
                 }
 
-                var row = _Banco.NewRow();
-                foreach (DataColumn column in _Banco.Columns)
+                var row = Banco.NewRow();
+                foreach (DataColumn column in Banco.Columns)
                 {
-                    row[column.ColumnName] = Math.Round(double.Parse(csv.GetField(_Banco.Columns.IndexOf(column)), CultureInfo.InvariantCulture), casasDecimais);
+                    row[column.ColumnName] = double.Parse(csv.GetField(Banco.Columns.IndexOf(column)), CultureInfo.InvariantCulture);
                 }
-                _Banco.Rows.Add(row);
+                Banco.Rows.Add(row);
             }
 
             FormataDataTable();
@@ -83,15 +83,15 @@ namespace TCC_KM
 
         private void FormataDataTable()
         {
-            var temp = _Banco.Clone();
-            for(int i = 0; i <= _Banco.Columns.Count - 1; i++)
+            var temp = Banco.Clone();
+            for(int i = 0; i <= Banco.Columns.Count - 1; i++)
             {
-                bool allints = _Banco.AsEnumerable().All(r => r.Field<Double>(i) == (long)r.Field<Double>(i));
+                bool allints = Banco.AsEnumerable().All(r => r.Field<Double>(i) == (long)r.Field<Double>(i));
                 if (allints)
                     temp.Columns[i].DataType = typeof(long);
             }
-            temp.Load(_Banco.CreateDataReader());
-            _Banco = temp;
+            temp.Load(Banco.CreateDataReader());
+            Banco = temp;
         }
 
     }

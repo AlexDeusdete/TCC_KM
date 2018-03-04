@@ -16,7 +16,7 @@ namespace TCC_KM
             InitializeComponent();
             hopkinsDT = new DataTable();
             hopkinsDT.Columns.Add("Hopkins");
-            dgBanco1.ItemsSource = hopkinsDT.DefaultView;
+            dgHopkins.ItemsSource = hopkinsDT.DefaultView;
         }
 
         private void btnCaminho_Click(object sender, RoutedEventArgs e)
@@ -33,13 +33,13 @@ namespace TCC_KM
         {
             bancoDados = new BancoDados(txtCaminho.Text, int.Parse(txtCasasDecimais.Text));
             bancoDados.ProcessaLeitura(char.Parse(txtDelimitador.Text), chbRegistro.IsChecked.Value, chbTitulo.IsChecked.Value);
-            dgBanco.ItemsSource = bancoDados.GetBanco().DefaultView;
+            dgDados.ItemsSource = bancoDados.GetBanco().DefaultView;
         }
 
         private void btnHopkins_Click(object sender, RoutedEventArgs e)
         {
             var hopkins = new Hopkins(bancoDados);
-            hopkinsDT.Rows.Add(hopkins.result);
+            hopkinsDT.Rows.Add(hopkins.Result);
         }
 
         private void btnKMedia_Click(object sender, RoutedEventArgs e)

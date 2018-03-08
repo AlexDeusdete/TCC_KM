@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Globalization;
-using System.Data.OleDb;
 using CsvHelper;
-using CsvHelper.Configuration;
 using System.Linq;
 
 namespace TCC_KM
@@ -19,13 +16,19 @@ namespace TCC_KM
         private DataTable Banco;
         public int _casasDecimais { get; private set; }
 
-        public BancoDados(string Path, int casasDecimais)
+        public BancoDados(string Caminho, int casasDecimais)
         {
-            this.Caminho = Path;
-            this._casasDecimais = casasDecimais;
+            this.Caminho = Caminho;
+            _casasDecimais = casasDecimais;
             Banco = new DataTable();
         }
 
+        /// <summary>
+        /// Vai retorna apenas as colunas que devem fazer parte do calculo
+        /// EX: em um banco de estudantes a coluna com o numero de registro
+        /// do alunos(RA) não deve entrar no calculo 
+        /// </summary>
+        /// <returns></returns>
         public DataTable GetBancoCalculo()
         {
             if (_identificadorDoRegistro)
@@ -41,9 +44,9 @@ namespace TCC_KM
 
         public void ProcessaLeitura(char DelimitadorCol, bool IdentificadorRegistro, bool TemCabecalho)
         {
-            this._delimitadorColuna = DelimitadorCol;
-            this._identificadorDoRegistro = IdentificadorRegistro;
-            this._temCabecalho = TemCabecalho;
+            _delimitadorColuna = DelimitadorCol;
+            _identificadorDoRegistro = IdentificadorRegistro;
+            _temCabecalho = TemCabecalho;
 
             CsvToData();
         }
@@ -81,6 +84,10 @@ namespace TCC_KM
             FormataDataTable();
         }
 
+        /// <summary>
+        /// formata campos do tipo inteiro para long
+        /// pois no momento da leitura do csv não é possivel distinguir o tipo do dado
+        /// </summary>
         private void FormataDataTable()
         {
             var temp = Banco.Clone();

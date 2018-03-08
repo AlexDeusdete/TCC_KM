@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace TCC_KM
 {
-    public static class Ponto
+    public static class Registro
     {
         public static double Distancia(List<double> X1, List<double> X2)
         {

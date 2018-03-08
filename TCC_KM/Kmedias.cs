@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace TCC_KM
 {
@@ -17,22 +15,44 @@ namespace TCC_KM
         public List<double> _coesoes { get; private set; } = new List<double>();
         public int _numeroGrupos { get;private set; }
         private int numeroDeCampos;
+        private Impressao Tela;
+        private int NumeroIteracoes = 0;
 
-        public Kmedias(BancoDados dados)
+        public Kmedias(BancoDados dados, TextBlock Saida)
         {
+            //Cria a classe de Saida de dados
+            Tela = new Impressao(Saida, dados._casasDecimais);
             _dados = dados.GetBancoCalculo();
             numeroDeCampos = dados.GetBancoCalculo().Columns.Count;
             _dados.Columns.Add("Grupo", typeof(int));
             _dados.Columns.Add("DistanciaMin", typeof(double));
 
+            /*o numero de grupos é definido por Sqrt(n/2) onde n
+                é o numero de registros da minha base de dados*/
             _numeroGrupos = Convert.ToInt32(Math.Sqrt((_dados.Rows.Count / 2.0)));
+
+            Tela.Escrever("Número de Grupos : " + _numeroGrupos);
         }
 
+        /// <summary>
+        /// Responsavel por iniciar o processo de agrupamento 
+        /// </summary>
         public void Processamento()
         {
             Agrupa(_centroides);
+
+            //imprime os grupos e a quantidade de registro que tem em cada um deles
+            Tela.Escrever("\n Grupo : Itens : Coesão : Separação");
+            for (int i = 0; i <= _numeroGrupos - 1; i++)
+            {
+                Tela.Escrever("Grupo "+i+" : "+ _dados.AsEnumerable().Where(x => x.Field<int>("Grupo") == i).Count()+
+                                " : "+_coesoes[i] +" : "+ _separacoes[i] );
+            }
         }
 
+        /// <summary>
+        /// Calcula o centróide geral do seus dados pegando a medias de todos os campos
+        /// </summary>
         public void CalculaCentroideGeral()
         {
             for(int i = 0; i <= numeroDeCampos - 1; i++)
@@ -42,8 +62,17 @@ namespace TCC_KM
                                     );
 
             }
+            Tela.Escrever("Centróide Geral : ");
+            Tela.Escrever(_centroideGeral);
         }
 
+        /// <summary>
+        /// Calculo da separação - n * d(Ck,C)
+        /// n = numero de registros do grupo
+        /// d = calculo distancia 
+        /// Ck = centroide do grupo
+        /// C = centroide geral
+        /// </summary>
         public void CalculoSeparacao()
         {
             _separacoes.Clear();
@@ -53,10 +82,14 @@ namespace TCC_KM
                 var reg = _dados.AsEnumerable().Where(x => x.Field<int>("Grupo") == i).Count();
 
 
-                _separacoes.Add(reg * Ponto.Distancia(_centroides[i], _centroideGeral));    
+                _separacoes.Add(reg * Registro.Distancia(_centroides[i], _centroideGeral));    
             }
         }
 
+        /// <summary>
+        /// Calculo da Coesao 
+        /// soma da distancia de todos os itens do grupo para seu centroide
+        /// </summary>
         public void CalculoCoesao()
         {
             _coesoes.Clear();
@@ -70,6 +103,9 @@ namespace TCC_KM
             }
         }
 
+        /// <summary>
+        /// captura aleatoriamente k centroides dos dados
+        /// </summary>
         public void CentroidesIniciais()
         {
             var rdn = new Random();
@@ -89,62 +125,90 @@ namespace TCC_KM
             }
         }
 
+        /// <summary>
+        /// faz o agrupamento dos dados de forma iterativa
+        /// </summary>
+        /// <param name="Centroides"></param>
         public void Agrupa(List<List<double>> Centroides)
         {
+            //lista para armazenar as distancias
             var distancias = new List<double>();
              
+            /*percorro todos os registros da minha base de dados
+             e para cada registro calculo a distancia entre ele e os centroides
+             */
             foreach(DataRow row in _dados.Rows)
             {
+                //separo um registro da minha base
                 var reg = row.ItemArray.Select(x => Convert.ToDouble(x)).Take(numeroDeCampos).ToList();
-
                 distancias.Clear();
+
+                /*adiciona a lista as distancia do registro para todos 
+                  os centroides */
                 foreach (List<double> centroide in Centroides)
                 {
+                    //calcula a distancia entre o registro e o centroide
                     distancias.Add(
-                        Ponto.Distancia(reg, centroide)
+                        Registro.Distancia(reg, centroide)
                         );
                 }
 
+                /*Procuro na lista de distancias qual a menor
+                 e coloco ela como "DistanciaMin" do registro*/
                 row["DistanciaMin"] = distancias.Min();
+
+                //coloco o grupo desse registro como aquele que teve a menor distancia
                 row["Grupo"] = distancias.IndexOf(distancias.Min());
 
             }
 
+            //guardo os valores de coesão e separação
             var CoesaoGeral = _coesoes.Sum();
             var SeparacaoGeral = _separacoes.Sum();
 
+            //calculo a coesão e separações dos novos grupos gerados 
             CalculoCoesao();
             CalculoSeparacao();
 
+            Tela.Escrever("Iteração :" + NumeroIteracoes);
+            Tela.Escrever("\nCentroides:");
+            Tela.Escrever(_centroides);
+            Tela.Escrever("\nCoesão:");
+            Tela.Escrever(_coesoes.Sum());
+            Tela.Escrever("\nSeparação:");
+            Tela.Escrever(_separacoes.Sum());
+
             RecalculaCentroides();
 
+            //Criterio de parada do algoritmo
             if ((CoesaoGeral == _coesoes.Sum()) &&
                 (SeparacaoGeral == _separacoes.Sum()))
             {
                 return;
             }
 
+            NumeroIteracoes++;
             Agrupa(_centroides);
         }
 
+        /// <summary>
+        /// recalcula o centroide
+        /// com base na medias dos registros do seu grupo
+        /// </summary>
         public void RecalculaCentroides()
         {
             _centroides.Clear();
-            int n;
             var centroide = new List<double>();
             for(int i = 0; i <= _numeroGrupos - 1; i++)
             {
                 centroide.Clear();
-
-                n = _dados.AsEnumerable()
-                                .Where(x => x.Field<int>("Grupo") == i).Count();
                 for(int j = 0; j<= numeroDeCampos - 1; j++)
                 {
                     var total = _dados.AsEnumerable()
                         .Where(x => x.Field<int>("Grupo") == i)
-                        .Sum(x => Convert.ToDouble(x[j]));
+                        .Average(x => Convert.ToDouble(x[j]));
 
-                    centroide.Add(total/n);
+                    centroide.Add(total);
                 }
 
                 _centroides.Add(centroide.ToList());

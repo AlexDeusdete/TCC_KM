@@ -1,37 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace TCC_KM
 {
     class Hopkins
     {
+        private Impressao Tela;
+
         private readonly DataTable _dados;
         public DataTable _regAmostraBanco{ get; private set; }
         public DataTable _regAleatorios{ get; private set; }
         public double Result { get; private set; }
 
-    public Hopkins(BancoDados banco)
+    public Hopkins(BancoDados dados, TextBlock Saida)
         {
-            this._dados = banco.GetBancoCalculo();
-            _regAmostraBanco = this._dados.Clone();
-            _regAleatorios = this._dados.Clone();
+            Tela = new Impressao(Saida,dados._casasDecimais);
+            _dados = dados.GetBancoCalculo();
+            
+            //cria dos bancos que vão armazenas amostra de dados para calculo do hopkins
+            _regAmostraBanco = _dados.Clone();
+            _regAleatorios = _dados.Clone();
+
+            /*"indexOriginal" é o index do registro na base de dados 
+             original*/
             _regAmostraBanco.Columns.Add("indexOriginal", typeof(Double));
             _regAmostraBanco.Columns.Add("DistanciaMin", typeof(Double));
-            _regAleatorios.Columns.Add("DistanciaMin", typeof(Double));
             _regAmostraBanco.Columns["DistanciaMin"].DefaultValue = 0;
+
+            _regAleatorios.Columns.Add("DistanciaMin", typeof(Double));
             _regAleatorios.Columns["DistanciaMin"].DefaultValue = 0;
 
-            PrencherDadosAReg();
-            PrencherDadosGReg();
+            Tela.Escrever("Pegando amostra do banco.");
+            PreencherAmostraBanco();
+
+            Tela.Escrever("Gerando registros aleatorios");
+            PreencherAleatorios();
+
+            Tela.Escrever("Calculando distancias minimas");
             CalculoMin(_regAmostraBanco);
             CalculoMin(_regAleatorios);
+
+            Tela.Escrever("Finalizando!");
             Result = CalculoFinal();
         }
 
-        private void PrencherDadosAReg()
+        private void PreencherAmostraBanco()
         {
             /*Preenche com registro aleatorios do banco 25%*/
             var rdn = new Random();
@@ -49,9 +65,12 @@ namespace TCC_KM
             }
         }
 
-        private void PrencherDadosGReg()
+        /// <summary>
+        /// preenche o  _regAleatorios com registros aleatorios com 
+        /// quantidade igual a 25% da quantidade de dados da base original
+        /// </summary>
+        private void PreencherAleatorios()
         {
-            /*Preenche com informações aleatorias 25% do banco*/
             var rdn = new Random();
             for (int j = 0; j < Convert.ToInt32(_dados.Rows.Count / 4.0); j++)
             {
@@ -59,6 +78,7 @@ namespace TCC_KM
                 int max, min;
                 for (int i = 0; i < _dados.Columns.Count; i++)
                 {
+                    //é verificado o tipo da coluna para gerar o dado aleatorio
                     if (_dados.Columns[i].DataType == typeof(long))
                     {
                         min = Convert.ToInt32(_dados.AsEnumerable().Min(x => x.Field<long>(i)));
@@ -76,6 +96,11 @@ namespace TCC_KM
             }
         }
 
+        /// <summary>
+        /// faz o calculo da distancia minima dos registros de table
+        /// para a minha base de dados original
+        /// </summary>
+        /// <param name="table"></param>
         private void CalculoMin(DataTable table)
         {
             double distancia = -1;
@@ -86,6 +111,8 @@ namespace TCC_KM
                 List<double> listY = dr.ItemArray.Select(x => Convert.ToDouble(x)).Take(_dados.Columns.Count).ToList();
                 if (dr.Table.Columns.Contains("indexOriginal"))
                 {
+                    /*se tiver "indexOriginal" gravo esse 
+                    valor para evitar calcular a distancia dele para ele mesmo*/
                     indexOriginal = Convert.ToInt32(dr["indexOriginal"]);
                 }
                 
@@ -98,7 +125,7 @@ namespace TCC_KM
                     }
 
                     List<double> listX = _dados.Rows[i].ItemArray.Select(x => Convert.ToDouble(x)).Take(_dados.Columns.Count).ToList();
-                    distancia = Ponto.Distancia(listX, listY);
+                    distancia = Registro.Distancia(listX, listY);
 
                     //i == 0 significa que estou na primeira execução e a distancia ainda está em branco.
                     //i == 1 e index original ==0 significa que estou na primeira execução pois se o index original. == 0 ele pula a primeira execução
@@ -110,7 +137,11 @@ namespace TCC_KM
                 }
             }
         }
-
+        /// <summary>
+        /// soma as distancias minimas encontradas e aplica a 
+        /// formula de estatistica de hopkins
+        /// </summary>
+        /// <returns>Hopkins</returns>
         private double CalculoFinal()
         {
             

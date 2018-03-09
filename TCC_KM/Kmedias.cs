@@ -14,7 +14,7 @@ namespace TCC_KM
         public List<double> _separacoes { get; private set; } = new List<double>();
         public List<double> _coesoes { get; private set; } = new List<double>();
         public int _numeroGrupos { get;private set; }
-        private int numeroDeCampos;
+        private int numeroDeAtributos;
         private Impressao Tela;
         private int NumeroIteracoes = 0;
 
@@ -23,7 +23,7 @@ namespace TCC_KM
             //Cria a classe de Saida de dados
             Tela = new Impressao(Saida, dados._casasDecimais);
             _dados = dados.GetBancoCalculo();
-            numeroDeCampos = dados.GetBancoCalculo().Columns.Count;
+            numeroDeAtributos = dados.GetBancoCalculo().Columns.Count;
             _dados.Columns.Add("Grupo", typeof(int));
             _dados.Columns.Add("DistanciaMin", typeof(double));
 
@@ -55,7 +55,7 @@ namespace TCC_KM
         /// </summary>
         public void CalculaCentroideGeral()
         {
-            for(int i = 0; i <= numeroDeCampos - 1; i++)
+            for(int i = 0; i <= numeroDeAtributos - 1; i++)
             {
                 _centroideGeral.Add(
                     _dados.AsEnumerable().Average(x => Convert.ToDouble(x[i]))
@@ -120,7 +120,7 @@ namespace TCC_KM
                 aux.Add(reg);
 
                 _centroides.Add(
-                    _dados.Rows[reg].ItemArray.Select(x => Convert.ToDouble(x)).Take(numeroDeCampos).ToList()
+                    _dados.Rows[reg].ItemArray.Select(x => Convert.ToDouble(x)).Take(numeroDeAtributos).ToList()
                     );
             }
         }
@@ -140,7 +140,7 @@ namespace TCC_KM
             foreach(DataRow row in _dados.Rows)
             {
                 //separo um registro da minha base
-                var reg = row.ItemArray.Select(x => Convert.ToDouble(x)).Take(numeroDeCampos).ToList();
+                var reg = row.ItemArray.Select(x => Convert.ToDouble(x)).Take(numeroDeAtributos).ToList();
                 distancias.Clear();
 
                 /*adiciona a lista as distancia do registro para todos 
@@ -202,7 +202,7 @@ namespace TCC_KM
             for(int i = 0; i <= _numeroGrupos - 1; i++)
             {
                 centroide.Clear();
-                for(int j = 0; j<= numeroDeCampos - 1; j++)
+                for(int j = 0; j<= numeroDeAtributos - 1; j++)
                 {
                     var total = _dados.AsEnumerable()
                         .Where(x => x.Field<int>("Grupo") == i)

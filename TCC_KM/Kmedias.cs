@@ -82,7 +82,7 @@ namespace TCC_KM
                 var reg = _dados.AsEnumerable().Where(x => x.Field<int>("Grupo") == i).Count();
 
 
-                _separacoes.Add(reg * Registro.Distancia(_centroides[i], _centroideGeral));    
+                _separacoes.Add(reg * Formulas.Distancia(_centroides[i], _centroideGeral));    
             }
         }
 
@@ -149,7 +149,7 @@ namespace TCC_KM
                 {
                     //calcula a distancia entre o registro e o centroide
                     distancias.Add(
-                        Registro.Distancia(reg, centroide)
+                        Formulas.Distancia(reg, centroide)
                         );
                 }
 

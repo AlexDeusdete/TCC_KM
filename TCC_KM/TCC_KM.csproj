@@ -57,7 +57,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Registro.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -67,6 +66,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BancoDados.cs" />
+    <Compile Include="Estatisticas.cs" />
+    <Compile Include="Formulas.cs" />
     <Compile Include="Hopkins.cs" />
     <Compile Include="Impressao.cs" />
     <Compile Include="Kmedias.cs" />

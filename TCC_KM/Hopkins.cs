@@ -125,7 +125,7 @@ namespace TCC_KM
                     }
 
                     List<double> listX = _dados.Rows[i].ItemArray.Select(x => Convert.ToDouble(x)).Take(_dados.Columns.Count).ToList();
-                    distancia = Registro.Distancia(listX, listY);
+                    distancia = Formulas.Distancia(listX, listY);
 
                     //i == 0 significa que estou na primeira execução e a distancia ainda está em branco.
                     //i == 1 e index original ==0 significa que estou na primeira execução pois se o index original. == 0 ele pula a primeira execução

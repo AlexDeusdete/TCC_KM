@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TCC_KM"
         mc:Ignorable="d"
         Title="TCC" Height="468" Width="596" WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid x:Name="Conteiner">
         <TabControl Margin="0,0,-0.4,0">
             <TabItem x:Name="tabDados" Header="Dados">
                 <Grid Background="#FFE5E5E5">
@@ -35,10 +35,12 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnHopkins" Content="Hopkins" HorizontalAlignment="Right" Margin="0,10,494.8,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnHopkins_Click" Height="19"/>
-                    <TextBlock x:Name="tbHopkins" HorizontalAlignment="Left" Height="365" Margin="276,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Text="Saida"/>
-                    <DataGrid x:Name="dgHopkins" HorizontalAlignment="Left" Height="366" Margin="10,34,0,0" VerticalAlignment="Top" Width="261"/>
-                    <Label x:Name="lbMediaHP" Content="Media :" HorizontalAlignment="Left" Height="29" Margin="461,1,0,0" VerticalAlignment="Top" Width="114"/>
+                    <Button x:Name="btnHopkins" Content="Hopkins" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnHopkins_Click" Height="22"/>
+                    <TextBlock x:Name="tbHopkins" HorizontalAlignment="Left" Height="360" Margin="276,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Text="Saida"/>
+                    <DataGrid x:Name="dgHopkins" HorizontalAlignment="Left" Margin="10,40,0,9" Width="261"/>
+                    <Label x:Name="lbMediaHP" Content="Media :" HorizontalAlignment="Left" Height="22" Margin="336,10,0,0" VerticalAlignment="Top" Width="236" Padding="2"/>
+                    <Label Content="Quantidade de execuções :" HorizontalAlignment="Left" Margin="106,10,0,0" VerticalAlignment="Top" Height="22" Width="144" VerticalContentAlignment="Stretch" Padding="0,2,0,0"/>
+                    <TextBox x:Name="txtQtdHopkins" HorizontalAlignment="Left" Height="22" Margin="255,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Text="1" FontSize="16" FontWeight="Bold" TextAlignment="Right" RenderTransformOrigin="0.5,0.409"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabKmedias" Header="K-Medias">
@@ -46,11 +48,13 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnKMedia" Content="K-media" HorizontalAlignment="Right" Margin="0,10,9.8,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.493,0.45" Click="btnKMedia_Click"/>
+                    <Button x:Name="btnKMedia" Content="K-media" HorizontalAlignment="Right" Margin="0,7,10,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.525,0.2" Click="btnKMedia_Click" Height="22"/>
                     <DataGrid x:Name="dgkmedia" Margin="0,34,9.8,10.4" IsReadOnly="True" Grid.IsSharedSizeScope="True" UseLayoutRounding="True" HorizontalAlignment="Right" Width="387"/>
                     <ScrollViewer Margin="10,34,401.8,10.4" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                         <TextBlock x:Name="tbKmedias" TextWrapping="Wrap" Text="TextBlock"/>
                     </ScrollViewer>
+                    <Label Content="Quantidade de execuções :" HorizontalAlignment="Right" Margin="0,5,160,0" VerticalAlignment="Top" Height="24" Width="155"/>
+                    <TextBox x:Name="txtQtdKmedia" HorizontalAlignment="Right" Height="22" Margin="0,7,95,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Text="1" FontSize="16" FontWeight="Bold" TextAlignment="Right" RenderTransformOrigin="-0.154,0.913"/>
                 </Grid>
             </TabItem>
         </TabControl>

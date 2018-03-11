@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace TCC_KM
@@ -41,8 +42,24 @@ namespace TCC_KM
             bancoDados = new BancoDados(txtCaminho.Text, int.Parse(txtCasasDecimais.Text));
             bancoDados.ProcessaLeitura(char.Parse(txtDelimitador.Text), chbRegistro.IsChecked.Value, chbTitulo.IsChecked.Value);
             dgDados.ItemsSource = bancoDados.GetBanco().DefaultView;
+            PreencheListBox();
         }
+        private void PreencheListBox()
+        {
+            foreach(DataColumn col in bancoDados.GetBancoCalculo().Columns)
+            {
+                CheckBox item = new CheckBox();
+                item.Name = "col"+col.ColumnName;
+                item.Content = col.ColumnName;
+                if (col.ColumnName == "Notas")
+                    item.IsChecked = true;
+                lbAtributos.Items.Add(item);
+            }
 
+            lbAtributos.Items.SortDescriptions.Add(
+                new System.ComponentModel.SortDescription("Content",
+                System.ComponentModel.ListSortDirection.Descending));
+        }
         private void btnHopkins_Click(object sender, RoutedEventArgs e)
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -78,6 +95,22 @@ namespace TCC_KM
             }
             Conteiner.IsEnabled = true;
             Mouse.OverrideCursor = null;
+        }
+
+        private void btnGrupos_Click(object sender, RoutedEventArgs e)
+        {
+            foreach(CheckBox item in lbAtributos.Items)
+            {
+                if (item.IsChecked.Value)
+                    estatisticas.SetColunaCSV(item.Content.ToString());  
+            }
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.DefaultExt = "csv";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                estatisticas.SalvarCSVGrupos(saveFileDialog.FileName+".csv");
+                File.Open(saveFileDialog.FileName + ".csv", FileMode.Open);
+            }
         }
     }
 }

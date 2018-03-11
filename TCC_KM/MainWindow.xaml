@@ -57,6 +57,16 @@
                     <TextBox x:Name="txtQtdKmedia" HorizontalAlignment="Right" Height="22" Margin="0,7,95,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Text="1" FontSize="16" FontWeight="Bold" TextAlignment="Right" RenderTransformOrigin="-0.154,0.913"/>
                 </Grid>
             </TabItem>
+            <TabItem x:Name="tabRelCSV" Header="Relatórios CSV" Margin="0,0,-4,-2">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox x:Name="lbAtributos" HorizontalAlignment="Left" Height="355" Margin="10,44,0,10" Width="137"/>
+                    <Label Content="Atributos :" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Button x:Name="btnGrupos" Content="CSV Grupos" HorizontalAlignment="Left" Height="53" Margin="158,45,0,0" VerticalAlignment="Top" Width="151" Click="btnGrupos_Click"/>
+                </Grid>
+            </TabItem>
         </TabControl>
 
     </Grid>

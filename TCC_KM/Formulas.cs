@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using static System.Math;
 
 namespace TCC_KM
 {
@@ -47,18 +48,15 @@ namespace TCC_KM
         }
         public static double Variancia(this IEnumerable<double> source)
         {
-            int n = 0;
-            double mean = 0;
+            int n = source.Count();
+            double media = source.Average();
             double M2 = 0;
 
             foreach (double x in source)
             {
-                n = n + 1;
-                double delta = x - mean;
-                mean = mean + delta / n;
-                M2 += delta * (x - mean);
+                M2 += Pow((x - media), 2);
             }
-            return M2 / (n - 1);
+            return M2 / (n);
         }
         public static double Variancia<T>(this IEnumerable<T> source,Func<T, double> selector)
         {

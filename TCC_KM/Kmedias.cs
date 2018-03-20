@@ -17,19 +17,20 @@ namespace TCC_KM
         private int numeroDeAtributos;
         private Impressao Tela;
         private int NumeroIteracoes = 0;
-
-        public Kmedias(BancoDados dados, TextBlock Saida)
+  
+        public Kmedias(BancoDados dados, TextBlock saida, int numeroGrupos)
         {
             //Cria a classe de Saida de dados
-            Tela = new Impressao(Saida, dados._casasDecimais);
+            Tela = new Impressao(saida, dados._casasDecimais);
             _dados = dados.GetBancoCalculo();
             numeroDeAtributos = dados.GetBancoCalculo().Columns.Count;
             _dados.Columns.Add("Grupo", typeof(int));
             _dados.Columns.Add("DistanciaMin", typeof(double));
 
-            /*o numero de grupos é definido por Sqrt(n/2) onde n
+            /*se não for especificado o numero de grupos
+             * o numero de grupos é definido por Sqrt(n/2) onde n
                 é o numero de registros da minha base de dados*/
-            _numeroGrupos = Convert.ToInt32(Math.Sqrt((_dados.Rows.Count / 2.0)));
+            _numeroGrupos = numeroGrupos == 0 ? Convert.ToInt32(Math.Sqrt((_dados.Rows.Count / 2.0))) : numeroGrupos;
 
             Tela.Escrever("Número de Grupos : " + _numeroGrupos);
         }
@@ -49,7 +50,6 @@ namespace TCC_KM
                                 " : "+_coesoes[i] +" : "+ _separacoes[i] );
             }
         }
-
         /// <summary>
         /// Calcula o centróide geral do seus dados pegando a medias de todos os campos
         /// </summary>

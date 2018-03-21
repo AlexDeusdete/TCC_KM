@@ -85,11 +85,11 @@ namespace TCC_KM
                 var kmedias = new Kmedias(bancoDados, tbKmedias, int.Parse(txtQtdGrupos.Text));
                 kmedias.CentroidesIniciais();
                 kmedias.CalculaCentroideGeral();
-                dgkmedia.ItemsSource = kmedias._dados.DefaultView;
+                dgkmedia.ItemsSource = kmedias.Dados.DefaultView;
                 kmedias.Processamento();
                 //guarda estatisticas dessa execução
-                estatisticas.SetEstatisticaGrupos(kmedias._dados);
-                txtQtdGrupos.Text = kmedias._numeroGrupos.ToString();
+                estatisticas.SetEstatisticaGrupos(kmedias.Dados);
+                txtQtdGrupos.Text = kmedias.NumeroGrupos.ToString();
             }
             Conteiner.IsEnabled = true;
             Mouse.OverrideCursor = null;
@@ -107,7 +107,10 @@ namespace TCC_KM
             saveFileDialog.DefaultExt = "csv";
             if (saveFileDialog.ShowDialog() == true)
             {
-                estatisticas.SalvarCSVGrupos(saveFileDialog.FileName);
+                if (chbCVSporColuna.IsChecked.Value)
+                    estatisticas.SalvarCSVGruposPorColuna(saveFileDialog.FileName);
+                else
+                    estatisticas.SalvarCSVGrupos(saveFileDialog.FileName);
                 System.Diagnostics.Process.Start(saveFileDialog.FileName);
             }
             Conteiner.IsEnabled = true;

@@ -67,6 +67,7 @@
                     <ListBox x:Name="lbAtributos" HorizontalAlignment="Left" Margin="10,44,0,10" Width="138"/>
                     <Label Content="Atributos :" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <Button x:Name="btnGrupos" HorizontalAlignment="Left" Height="53" Margin="158,45,0,0" VerticalAlignment="Top" Width="151" Click="btnGrupos_Click" Content="CSV Grupos"/>
+                    <CheckBox x:Name="chbCVSporColuna" Content="CSV Por Coluna" HorizontalAlignment="Left" Margin="331,45,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem x:Name="tabRelGraph" Header="Relatórios Graph" Margin="0,0,-4,-2">

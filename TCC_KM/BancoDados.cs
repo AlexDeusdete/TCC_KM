@@ -10,19 +10,17 @@ namespace TCC_KM
     class BancoDados
     {
         private string Caminho;
-        public char _delimitadorColuna { get; private set; }
-        public bool _identificadorDoRegistro { get; private set; }
-        public bool _temCabecalho{ get; private set; }
+        public char DelimitadorColuna { get; private set; }
+        public bool IdentificadorDoRegistro { get; private set; }
+        public bool TemCabecalho{ get; private set; }
         private DataTable Banco;
-        public int _casasDecimais { get; private set; }
-
+        public int CasasDecimais { get; private set; }
         public BancoDados(string Caminho, int casasDecimais)
         {
             this.Caminho = Caminho;
-            _casasDecimais = casasDecimais;
+            CasasDecimais = casasDecimais;
             Banco = new DataTable();
         }
-
         /// <summary>
         /// Vai retorna apenas as colunas que devem fazer parte do calculo
         /// EX: em um banco de estudantes a coluna com o numero de registro
@@ -31,7 +29,7 @@ namespace TCC_KM
         /// <returns></returns>
         public DataTable GetBancoCalculo()
         {
-            if (_identificadorDoRegistro)
+            if (IdentificadorDoRegistro)
             {
                 var aux = Banco.Copy();
                 aux.Columns.RemoveAt(0);
@@ -39,22 +37,19 @@ namespace TCC_KM
             }
             return Banco.Copy();
         }
-
         public DataTable GetBanco() => Banco;
-
         public void ProcessaLeitura(char DelimitadorCol, bool IdentificadorRegistro, bool TemCabecalho)
         {
-            _delimitadorColuna = DelimitadorCol;
-            _identificadorDoRegistro = IdentificadorRegistro;
-            _temCabecalho = TemCabecalho;
+            DelimitadorColuna = DelimitadorCol;
+            IdentificadorDoRegistro = IdentificadorRegistro;
+            this.TemCabecalho = TemCabecalho;
 
             CsvToData();
         }
-
         private void CsvToData()
         {
             var csv = new CsvReader(new StreamReader(Caminho));
-            csv.Configuration.Delimiter = _delimitadorColuna.ToString(); 
+            csv.Configuration.Delimiter = DelimitadorColuna.ToString(); 
             while (csv.Read())
             {      
                 var i = 0;
@@ -63,13 +58,13 @@ namespace TCC_KM
                 {
                     while (csv.TryGetField<string>(i, out Coluna))
                     {
-                        if (_temCabecalho)
+                        if (TemCabecalho)
                             Banco.Columns.Add(Coluna,typeof(double));
                         else
                             Banco.Columns.Add(i.ToString(), typeof(double));
                         i++;
                     }
-                    if (_temCabecalho)
+                    if (TemCabecalho)
                         continue;
                 }
 
@@ -83,7 +78,6 @@ namespace TCC_KM
 
             FormataDataTable();
         }
-
         /// <summary>
         /// formata campos do tipo inteiro para long
         /// pois no momento da leitura do csv não é possivel distinguir o tipo do dado

@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using Enumerados;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,8 +12,7 @@ namespace TCC_KM
 {
     class Estatisticas
     {
-        public DataTable _EstatisticaGrupos { get; private set; }
-        private enum TiposEstatisticasGrupo {Media,Mediana,DesvioPadrao};
+        public DataTable EstatisticaGrupos { get; private set; }
         private int NumeroExecucao = 0;
         private List<string> ColunasDisponiveisCSV = new List<string> { "NumeroExecucao", "Grupo", "QuantidadeDeRegistros" };
         /// <summary>
@@ -20,11 +20,11 @@ namespace TCC_KM
         /// </summary>
         public Estatisticas()
         {
-            _EstatisticaGrupos = new DataTable();
+            EstatisticaGrupos = new DataTable();
 
-            _EstatisticaGrupos.Columns.Add("NumeroExecucao", typeof(int));
-            _EstatisticaGrupos.Columns.Add("Grupo", typeof(int));
-            _EstatisticaGrupos.Columns.Add("QuantidadeDeRegistros", typeof(int));
+            EstatisticaGrupos.Columns.Add("NumeroExecucao", typeof(int));
+            EstatisticaGrupos.Columns.Add("Grupo", typeof(int));
+            EstatisticaGrupos.Columns.Add("QuantidadeDeRegistros", typeof(int));
         }
         /// <summary>
         /// Recebe os dados já processados pelo algoritmo das kmedias e calcula
@@ -33,7 +33,7 @@ namespace TCC_KM
         /// <param name="dados">retorno do algpritmo das kmedias</param>
         public void SetEstatisticaGrupos(DataTable dados)
         {
-            if (_EstatisticaGrupos.Columns.Count == 3)
+            if (EstatisticaGrupos.Columns.Count == 3)
                 CriaColunasEstatisticaGrupo(dados);
 
             //Controla o numero de vezes que o metodo é executado para gravar
@@ -42,7 +42,7 @@ namespace TCC_KM
 
             for(int grupo = 0; grupo <= numeroGrupos - 1; grupo++)
             {
-                var dr = _EstatisticaGrupos.NewRow();
+                var dr = EstatisticaGrupos.NewRow();
                 dr["NumeroExecucao"] = NumeroExecucao;
                 dr["Grupo"] = grupo;
                 dr["QuantidadeDeRegistros"] = dados.AsEnumerable().Where(x => x.Field<int>("Grupo") == grupo).Count();
@@ -55,14 +55,14 @@ namespace TCC_KM
                     foreach (var tipoestatistica in Enum.GetNames(typeof(TiposEstatisticasGrupo)))
                     {
                         //Verifica se a coluna existe antes de inserir a estatistica
-                        if (_EstatisticaGrupos.Columns.Contains(column.ColumnName + '-' + tipoestatistica))                       
+                        if (EstatisticaGrupos.Columns.Contains(column.ColumnName + '-' + tipoestatistica))                       
                             dr[column.ColumnName + '-' + tipoestatistica] = GetEstatistica((TiposEstatisticasGrupo)Enum.Parse(typeof(TiposEstatisticasGrupo), tipoestatistica),
                                                                                   grupo,
                                                                                   dados,
                                                                                   column.ColumnName);
                     }
                 }
-                _EstatisticaGrupos.Rows.Add(dr);
+                EstatisticaGrupos.Rows.Add(dr);
             }
         }
         /// <summary>
@@ -92,7 +92,7 @@ namespace TCC_KM
                 /*itero na lista do tipos de estatistica para criar uma coluna para cada um deles no banco de dados*/
                 foreach (var tipoestatistica in Enum.GetNames(typeof(TiposEstatisticasGrupo)))
                 {
-                    _EstatisticaGrupos.Columns.Add(dados.Columns[i].ColumnName +'-'+ tipoestatistica, typeof(double));
+                    EstatisticaGrupos.Columns.Add(dados.Columns[i].ColumnName +'-'+ tipoestatistica, typeof(double));
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace TCC_KM
             {
                 csv.Configuration.Delimiter = ";";
                 // Criar colunas
-                foreach (DataColumn column in _EstatisticaGrupos.Columns)
+                foreach (DataColumn column in EstatisticaGrupos.Columns)
                 {
                     //só crias as colunas já especificadas
                     if(ColunasDisponiveisCSV.Contains(column.ColumnName))
@@ -140,16 +140,61 @@ namespace TCC_KM
                 csv.NextRecord();
 
                 // Cria as linhas
-                foreach (DataRow row in _EstatisticaGrupos.Rows)
+                foreach (DataRow row in EstatisticaGrupos.Rows)
                 {
-                    for (var i = 0; i < _EstatisticaGrupos.Columns.Count; i++)
+                    for (var i = 0; i < EstatisticaGrupos.Columns.Count; i++)
                     {
-                        if (ColunasDisponiveisCSV.Contains(_EstatisticaGrupos.Columns[i].ColumnName))
+                        if (ColunasDisponiveisCSV.Contains(EstatisticaGrupos.Columns[i].ColumnName))
                             csv.WriteField(row[i]);
                     }
                     csv.NextRecord();
                 }
             }
+        }
+        /// <summary>
+        /// Pega as estatisticas ja calculadas
+        /// e de acordo com as colunas especificadas salva um csv
+        /// onde cada linha vai ser uma iteração
+        /// </summary>
+        /// <param name="path">caminho onde o arquivo deve ficar</param>
+        public void SalvarCSVGruposPorColuna(String path)
+        {
+            var numeroGrupo = EstatisticaGrupos.AsEnumerable().GroupBy(x => x.Field<int>("Grupo")).Count();
+            //remove pq no relatorio por colunas mnão tem essas colunas
+            ColunasDisponiveisCSV.Remove("NumeroExecucao");
+            ColunasDisponiveisCSV.Remove("Grupo");
+
+            using (var textWriter = File.CreateText(path))
+            using (var csv = new CsvWriter(textWriter))
+            {
+                csv.Configuration.Delimiter = ";";
+                // Criar colunas
+                for (int i = 0; i <= numeroGrupo - 1; i++)
+                    foreach (DataColumn column in EstatisticaGrupos.Columns)
+                    {
+                        //só crias as colunas já especificadas
+                        if (ColunasDisponiveisCSV.Contains(column.ColumnName))
+                                csv.WriteField(i +"_"+ column.ColumnName);
+                    }
+                csv.NextRecord();
+
+                var numeroIteracoes = EstatisticaGrupos.AsEnumerable().GroupBy(x => x.Field<int>("NumeroExecucao")).Count();
+                // Cria as linhas
+                for(int i = 1; i <= numeroIteracoes; i++)
+                {
+                    foreach (DataRow row in EstatisticaGrupos.AsEnumerable().Where(x => x.Field<int>("NumeroExecucao") == i))
+                    {
+                        for (var j = 0; j < EstatisticaGrupos.Columns.Count; j++)
+                        {
+                        if (ColunasDisponiveisCSV.Contains(EstatisticaGrupos.Columns[j].ColumnName))
+                                csv.WriteField(row[j]);
+                        }
+                    }
+                    csv.NextRecord();
+                }
+            }
+            ColunasDisponiveisCSV.Add("NumeroExecucao");
+            ColunasDisponiveisCSV.Add("Grupo");
         }
     }
 }

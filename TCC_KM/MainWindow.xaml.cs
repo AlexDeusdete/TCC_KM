@@ -18,6 +18,7 @@ namespace TCC_KM
         //Variaveis que vão controlar o banco de dados atual
         private BancoDados bancoDados;
         private DataTable hopkinsDT;
+        private DataTable Kmedia;
         private Estatisticas estatisticas;
 
         public MainWindow()
@@ -51,6 +52,8 @@ namespace TCC_KM
                 item.Name = "col"+col.ColumnName;
                 item.Content = col.ColumnName;
                 lbAtributos.Items.Add(item);
+                cbX.Items.Add(col.ColumnName);
+                cbY.Items.Add(col.ColumnName);
             }
 
             lbAtributos.Items.SortDescriptions.Add(
@@ -87,6 +90,10 @@ namespace TCC_KM
                 kmedias.CalculaCentroideGeral();
                 dgkmedia.ItemsSource = kmedias.Dados.DefaultView;
                 kmedias.Processamento();
+
+                //guarda informações do ultimo calculo
+                Kmedia = kmedias.Dados.Copy();
+
                 //guarda estatisticas dessa execução
                 estatisticas.SetEstatisticaGrupos(kmedias.Dados);
                 txtQtdGrupos.Text = kmedias.NumeroGrupos.ToString();
@@ -118,8 +125,12 @@ namespace TCC_KM
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            // Get URI to navigate to
-            Uri uri = new Uri("file:///C:/Users/Kayn%C3%A3/Desktop/teste.html", UriKind.RelativeOrAbsolute);
+            var X = cbX.SelectedItem.ToString();
+            var Y = cbY.SelectedItem.ToString();
+            var grafico = new Grafico(Kmedia, X, Y);
+            grafico.BindChart();
+            var TT = grafico.HtmlGrafico.ToString();
+            wbGraf.NavigateToString(TT);
         }
     }
 }

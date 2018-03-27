@@ -91,6 +91,7 @@
     <Compile Include="Enumerados.cs" />
     <Compile Include="Estatisticas.cs" />
     <Compile Include="Formulas.cs" />
+    <Compile Include="Graficos\Graficos.cs" />
     <Compile Include="Hopkins.cs" />
     <Compile Include="Impressao.cs" />
     <Compile Include="Kmedias.cs" />
@@ -126,5 +127,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
